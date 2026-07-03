@@ -1,0 +1,36 @@
+# Dependencies (installed inside the image, never copied from host)
+node_modules
+
+# Build outputs
+dist
+out
+build
+*.tgz
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Version control & metadata
+.git
+.gitignore
+
+# Editor / OS cruft
+.idea
+.vscode
+.DS_Store
+*.tsbuildinfo
+.eslintcache
+.cache
+
+# Logs & coverage
+logs
+*.log
+coverage
+*.lcov
+
+# Don't copy the Docker definitions themselves
+Dockerfile
+.dockerignore
+docker-compose*.yml
