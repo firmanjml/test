@@ -65,6 +65,20 @@ const getDownloadFileName = (fileName: string) => {
     return sanitizedFileName || 'image'
 }
 
+const validateImageApiKey = (apiKey: string | undefined) => {
+    const expectedApiKey = process.env.API_KEY_SECRET
+
+    if (!expectedApiKey) {
+        return Response.json({ error: 'API key is not configured' }, { status: 500 })
+    }
+
+    if (apiKey !== expectedApiKey) {
+        return Response.json({ error: 'Invalid API key' }, { status: 401 })
+    }
+
+    return null
+}
+
 const getLatestImage = (images: Record<string, StoredImage>) => {
     return Object.values(images).sort((firstImage, secondImage) => {
         return new Date(secondImage.uploadedAt).getTime() - new Date(firstImage.uploadedAt).getTime()
@@ -121,6 +135,12 @@ app.post('/sync', async (c) => {
 })
 
 app.post('/images', async (c) => {
+    const apiKeyError = validateImageApiKey(c.req.header('x-api-key'))
+
+    if (apiKeyError) {
+        return apiKeyError
+    }
+
     const body = await c.req.parseBody()
     const image = body.image
 
@@ -159,6 +179,12 @@ app.post('/images', async (c) => {
 })
 
 app.get('/images', async (c) => {
+    const apiKeyError = validateImageApiKey(c.req.header('x-api-key'))
+
+    if (apiKeyError) {
+        return apiKeyError
+    }
+
     const images = await readStoredImages()
     const image = getLatestImage(images)
 
@@ -170,6 +196,12 @@ app.get('/images', async (c) => {
 })
 
 app.get('/images/:id', async (c) => {
+    const apiKeyError = validateImageApiKey(c.req.header('x-api-key'))
+
+    if (apiKeyError) {
+        return apiKeyError
+    }
+
     const id = c.req.param('id')
     const images = await readStoredImages()
     const image = images[id]
