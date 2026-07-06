@@ -15,7 +15,7 @@ type StoredImage = {
     uploadedAt: string
 }
 
-const uploadDir = join(process.cwd(), 'uploads')
+const uploadDir = process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads')
 const metadataPath = join(uploadDir, 'metadata.json')
 
 const extensionByMimeType: Record<string, string> = {

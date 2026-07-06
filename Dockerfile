@@ -20,11 +20,14 @@ RUN bun install --frozen-lockfile --production
 COPY tsconfig.json ./
 COPY src ./src
 
+RUN mkdir -p /app/uploads && chown -R bun:bun /app/uploads
+
 # Drop privileges: the oven/bun image ships a non-root "bun" user (uid 1000).
 USER bun
 
 # Bun auto-serves a default-exported Hono app on port 3000.
 ENV PORT=3000
+ENV UPLOAD_DIR=/app/uploads
 EXPOSE 3000
 
 # Liveness check: any HTTP response (even the 404 from an empty store) means
